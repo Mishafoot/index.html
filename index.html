@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лабораторна робота 2.5 | Фотогалерея</title>
-    <!-- Підключення jQuery (Завдання 7) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+    <title>Лабораторна робота 2.6 | Налагодження та фільтрування даних</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7f6;
             color: #333;
+            line-height: 1.6;
             padding: 20px;
-            max-width: 900px;
+            max-width: 850px;
             margin: 0 auto;
         }
-        h2 {
+        h2, h3 {
             color: #2c3e50;
         }
         .header-info {
@@ -25,83 +24,182 @@
             margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .controls {
+        .task-container {
+            background: #fff;
+            padding: 20px;
             margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        input {
+            padding: 8px;
+            margin: 5px 10px 10px 0;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            width: 200px;
         }
         button {
             background-color: #3498db;
             color: white;
             border: none;
-            padding: 8px 12px;
+            padding: 8px 15px;
             cursor: pointer;
             border-radius: 4px;
             font-size: 14px;
-            margin-right: 8px;
-            margin-bottom: 5px;
+            margin-right: 5px;
+            margin-bottom: 10px;
         }
         button:hover {
             background-color: #2980b9;
         }
-        /* Стилі галереї з теоретичних відомостей */
-        #gallery {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: #fff;
         }
-        #gallery img {
-            width: 150px;
-            height: 100px;
-            object-fit: cover;
-            cursor: pointer;
-            border: 2px solid #bdc3c7;
-            border-radius: 4px;
-            transition: transform 0.2s;
+        table, th, td {
+            border: 1px solid #bdc3c7;
         }
-        #gallery img:hover {
-            transform: scale(1.05);
-            border-color: #3498db;
+        th, td {
+            padding: 10px;
+            text-align: left;
         }
-        .preview-container {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: inline-block;
-        }
-        #mainImage {
-            max-width: 100%;
-            width: 400px;
-            height: auto;
-            border-radius: 4px;
-            display: block;
+        th {
+            background-color: #ecf0f1;
         }
     </style>
 </head>
 <body>
 
     <div class="header-info">
-        <h2>Лабораторна робота 2.5. Розробка сценарію фотогалереї</h2>
+        <h2>Лабораторна робота 2.6. Засоби налагодження і тестування сценаріїв JavaScript</h2>
         <p><strong>Виконав:</strong> ст. гр. Інф-35О, Мартинюк Михайло Віталійович</p>
     </div>
 
-    <!-- Керування галереєю (Завдання 5, 6) -->
-    <div class="controls">
-        <button id="sortImages">Сортувати за алфавітом</button>
-        <button id="clearGallery">Очистити галерею</button>
-        <button id="loadStorage">Завантажити з Local Storage</button>
+    <div class="task-container">
+        <h3>Фільтрація та перегляд користувачів (Завдання 1–10)</h3>
+        
+        <div>
+            <input type="number" id="ageInput" placeholder="Мінімальний вік">
+            <input type="text" id="cityInput" placeholder="Введіть місто">
+            <button id="filterButton">Фільтрувати за віком</button>
+            <button id="filterCityButton">Фільтрувати за містом</button>
+            <button id="resetButton" style="background-color: #e74c3c;">Скинути фільтри</button>
+        </div>
+
+        <table id="userTable">
+            <thead>
+                <tr>
+                    <th>Ім'я</th>
+                    <th>Вік</th>
+                    <th>Місто</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Динамічні рядки -->
+            </tbody>
+        </table>
     </div>
 
-    <!-- Контейнер галереї (Завдання 1) -->
-    <div id="gallery"></div>
+    <script>
+        // ==========================================
+        // ЗАДАЧА 1: Масив користувачів українською
+        // ==========================================
+        let users = [
+            { name: "Аліса", age: 25, city: "Київ" },
+            { name: "Богдан", age: 30, city: "Львів" },
+            { name: "Олександр", age: 35, city: "Одеса" },
+            { name: "Дмитро", age: 22, city: "Київ" },
+            { name: "Олена", age: 28, city: "Харків" },
+            { name: "Ігор", age: 41, city: "Львів" },
+            { name: "Катерина", age: 27, city: "Дніпро" },
+            { name: "Максим", age: 33, city: "Одеса" },
+            { name: "Софія", age: 19, city: "Київ" },
+            { name: "Тарас", age: 38, city: "Запоріжжя" }
+        ];
 
-    <!-- Область попереднього перегляду (Завдання 4) -->
-    <div class="preview-container">
-        <h3>Попередній перегляд</h3>
-        <img id="mainImage" src="" alt="Оберіть зображення">
-    </div>
+        // ==========================================
+        // ЗАДАЧА 2 & 3: Відображення даних у таблиці з console.log()
+        // ==========================================
+        function displayUsers(usersToDisplay) {
+            console.log("Відображення користувачів:", usersToDisplay);
 
-    <!-- Підключення скрипта -->
-    <script src="script.js" defer></script>
+            const table = document.getElementById("userTable");
+            const tbody = table.querySelector("tbody") || table.createTBody();
+            tbody.innerHTML = ""; 
+
+            usersToDisplay.forEach(user => {
+                const row = tbody.insertRow();
+                row.insertCell(0).innerText = user.name;
+                row.insertCell(1).innerText = user.age;
+                row.insertCell(2).innerText = user.city;
+            });
+        }
+
+        // ==========================================
+        // ЗАДАЧА 4: Фільтрація за віком (з debugger)
+        // ==========================================
+        document.getElementById("filterButton").onclick = function() {
+            const age = parseInt(document.getElementById("ageInput").value);
+            debugger; 
+            const filteredUsers = users.filter(user => user.age >= (isNaN(age) ? 0 : age));
+            displayUsers(filteredUsers);
+        };
+
+        // ==========================================
+        // ЗАДАЧА 5: Фільтрація за містом
+        // ==========================================
+        document.getElementById("filterCityButton").onclick = function() {
+            const city = document.getElementById("cityInput").value.trim();
+            const filteredUsers = users.filter(user => 
+                city === "" || user.city.toLowerCase() === city.toLowerCase()
+            );
+            displayUsers(filteredUsers);
+        };
+
+        // ==========================================
+        // ЗАДАЧА 6: Скидання фільтрів
+        // ==========================================
+        document.getElementById("resetButton").onclick = function() {
+            document.getElementById("ageInput").value = "";
+            document.getElementById("cityInput").value = "";
+            displayUsers(users);
+        };
+
+        // ==========================================
+        // ЗАДАЧА 7: Динамічне оновлення таблиці
+        // ==========================================
+        const updateTable = () => {
+            const age = parseInt(document.getElementById("ageInput").value);
+            const city = document.getElementById("cityInput").value.trim();
+            
+            const filteredUsers = users.filter(user =>
+                (isNaN(age) || user.age >= age) &&
+                (city === "" || user.city.toLowerCase().includes(city.toLowerCase()))
+            );
+            displayUsers(filteredUsers);
+        };
+
+        document.getElementById("ageInput").oninput = updateTable;
+        document.getElementById("cityInput").oninput = updateTable;
+
+        // ==========================================
+        // ЗАДАЧА 9 & 10: Робота з Local Storage
+        // ==========================================
+        window.onload = function() {
+            // Примусово оновлюємо Local Storage актуальним масивом українською
+            localStorage.setItem("users", JSON.stringify(users));
+            
+            // Завантажуємо дані з Local Storage
+            const savedUsers = JSON.parse(localStorage.getItem("users"));
+            if (savedUsers) {
+                users = savedUsers;
+            }
+            
+            console.log("Дані завантажено з Local Storage.");
+            displayUsers(users);
+        };
+    </script>
 </body>
 </html>
