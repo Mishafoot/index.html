@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота 2.4 | Усі завдання (1-10)</title>
+    <!-- Підключення бібліотеки jQuery (Завдання 3) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h2, h3 {
+            color: #2c3e50;
+        }
+        .header-info {
+            background: #fff;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .task-container {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-right: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        input, select {
+            padding: 8px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+            display: block;
+        }
+        .result-box {
+            background: #ecf0f1;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-info">
+        <h2>Лабораторна робота 2.4. Розробка сценарію обробки даних елементів форми</h2>
+        <p><strong>Виконав:</strong> ст. гр. Інф-35О, Мартинюк Михайло Віталійович</p>
+    </div>
+
+    <!-- Завдання 1, 2, 6, 7, 8, 9 (Форма та логіка) -->
+    <div class="task-container">
+        <h3>Завдання 1, 2, 6, 7, 8, 9. Обробка форми, валідація, Local Storage</h3>
+        <form id="contactForm">
+            <label for="name">Ваше ім'я (Завдання 1):</label>
+            <input type="text" id="name" placeholder="Введіть ім'я" required>
+
+            <label for="email">Електронна пошта (Завдання 1, 2):</label>
+            <input type="email" id="email" placeholder="example@domain.com" required>
+
+            <label for="address">Адреса (Завдання 6):</label>
+            <input type="text" id="address" placeholder="Введіть адресу">
+
+            <!-- Завдання 7: кнопка вимкнена, якщо поля порожні -->
+            <button type="submit" id="submitBtn" disabled>Надіслати (Завдання 1, 8)</button>
+            <button type="button" id="clearBtn" style="background-color: #e74c3c;">Очистити пам'ять</button>
+        </form>
+        <div id="formResult" class="result-box">Результат з'явиться тут...</div>
+    </div>
+
+    <!-- Завдання 3: jQuery -->
+    <div class="task-container">
+        <h3>Завдання 3. Використання бібліотеки jQuery</h3>
+        <p id="jqueryText">Цей текст зміниться за допомогою jQuery.</p>
+        <button id="changeTextButton">Змінити текст (jQuery)</button>
+    </div>
+
+    <!-- Завдання 4: Динамічні елементи -->
+    <div class="task-container">
+        <h3>Завдання 4. Додавання динамічних елементів</h3>
+        <button id="addParagraphButton">Додати новий абзац</button>
+        <div id="dynamicContainer"></div>
+    </div>
+
+    <!-- Завдання 5: Вибір типу даних -->
+    <div class="task-container">
+        <h3>Завдання 5. Вибір типу даних</h3>
+        <select id="dataType">
+            <option value="text">Текст</option>
+            <option value="email">Електронна пошта</option>
+            <option value="tel">Телефон</option>
+        </select>
+        <button id="showDataType">Показати тип даних</button>
+    </div>
+
+    <script>
+        // ==========================================
+        // ЗАДАЧА 9: Відображення даних з Local Storage при завантаженні
+        // ==========================================
+        window.onload = function() {
+            const savedName = localStorage.getItem("name");
+            const savedEmail = localStorage.getItem("email");
+            const savedAddress = localStorage.getItem("address");
+
+            if (savedName) document.getElementById("name").value = savedName;
+            if (savedEmail) document.getElementById("email").value = savedEmail;
+            if (savedAddress) document.getElementById("address").value = savedAddress;
+
+            checkFormInputs();
+
+            if (savedName || savedEmail) {
+                document.getElementById("formResult").innerText = 
+                    `[Завдання 9] Завантажено з Local Storage:\nІм'я: ${savedName}\nEmail: ${savedEmail}\nАдреса: ${savedAddress || 'не вказана'}`;
+            }
+        };
+
+        const formInputs = document.querySelectorAll("#contactForm input");
+        const submitBtn = document.getElementById("submitBtn");
+
+        function checkFormInputs() {
+            const isEmpty = Array.from(formInputs).some(input => input.value.trim() === "");
+            submitBtn.disabled = isEmpty; // Завдання 7
+        }
+
+        // Завдання 7: Подія input для перевірки заповненості полів
+        formInputs.forEach(input => {
+            input.oninput = checkFormInputs;
+        });
+
+        // Завдання 1, 2, 6, 8: Обробка submit, валідація, консоль і Local Storage
+        document.getElementById("contactForm").onsubmit = function(event) {
+            event.preventDefault();
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const address = document.getElementById("address").value.trim();
+
+            // Завдання 2: Валідація email
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert("Невірний формат електронної пошти!");
+                return;
+            }
+
+            // Завдання 1 & 6: Вивід в консоль та екран
+            console.log(`Ім'я: ${name}, Email: ${email}, Адреса: ${address}`);
+            document.getElementById("formResult").innerText = 
+                `[Успішно]\nІм'я: ${name}\nEmail: ${email}\nАдреса: ${address || "Не вказано"}`;
+
+            // Завдання 8: Збереження в Local Storage
+            localStorage.setItem("name", name);
+            localStorage.setItem("email", email);
+            localStorage.setItem("address", address);
+            alert("Дані збережено у Local Storage!");
+        };
+
+        document.getElementById("clearBtn").onclick = function() {
+            localStorage.clear();
+            document.getElementById("contactForm").reset();
+            checkFormInputs();
+            document.getElementById("formResult").innerText = "Пам'ять очищено.";
+        };
+
+        // ==========================================
+        // ЗАДАЧА 3: jQuery
+        // ==========================================
+        $("#changeTextButton").click(function() {
+            $("#jqueryText").text("Текст успішно змінено за допомогою jQuery!");
+        });
+
+        // ==========================================
+        // ЗАДАЧА 4: Динамічні елементи
+        // ==========================================
+        document.getElementById("addParagraphButton").onclick = function() {
+            const newParagraph = document.createElement("p");
+            newParagraph.innerText = "Новий абзац (Завдання 4)";
+            newParagraph.style.color = "#27ae60";
+            document.getElementById("dynamicContainer").appendChild(newParagraph);
+        };
+
+        // ==========================================
+        // ЗАДАЧА 5: Вибір типу даних
+        // ==========================================
+        document.getElementById("showDataType").onclick = function() {
+            const selectedType = document.getElementById("dataType").value;
+            alert(`Вибрано тип даних: ${selectedType}`);
+        };
+    </script>
+</body>
+</html>
