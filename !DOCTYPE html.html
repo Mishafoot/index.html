@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота 2.3 | DOM API</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 950px;
+            margin: 0 auto;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .header-info {
+            background: #fff;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .task-container {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            margin-right: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        input, select {
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 300px;
+            box-sizing: border-box;
+        }
+        .result-box {
+            background: #ecf0f1;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        /* Стилі для завдань */
+        .red {
+            color: red;
+            font-weight: bold;
+        }
+        #hoverText {
+            padding: 10px;
+            background: #ffeaa7;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-info">
+        <h2>Лабораторна робота 2.3. Програмна взаємодія з HTML-документами на основі DOM API</h2>
+        <p><strong>Виконав:</strong> ст. гр. Інф-35О, Мартинюк Михайло Віталійович</p>
+    </div>
+
+    <!-- Завдання 1 -->
+    <div class="task-container">
+        <h3>Завдання 1. Основи DOM</h3>
+        <p id="header">Привіт, світ!</p>
+        <button onclick="task1Log()">Вивести текст заголовка в консоль</button>
+    </div>
+
+    <!-- Завдання 2 -->
+    <div class="task-container">
+        <h3>Завдання 2. Зміна вмісту елемента</h3>
+        <p id="text">Цей текст зміниться.</p>
+        <button id="changeTextButton">Змінити текст</button>
+    </div>
+
+    <!-- Завдання 3 -->
+    <div class="task-container">
+        <h3>Завдання 3. Додавання елементів</h3>
+        <button id="addParagraphButton">Додати абзац</button>
+        <div id="paragraphContainer"></div>
+    </div>
+
+    <!-- Завдання 4 -->
+    <div class="task-container">
+        <h3>Завдання 4. Видалення елементів</h3>
+        <p class="removable">Абзац для видалення 1</p>
+        <p class="removable">Абзац для видалення 2</p>
+        <button id="removeLastParagraph">Видалити останній абзац</button>
+    </div>
+
+    <!-- Завдання 5 -->
+    <div class="task-container">
+        <h3>Завдання 5. Зміна стилів</h3>
+        <button id="changeBackgroundColor">Змінити фон сторінки</button>
+    </div>
+
+    <!-- Завдання 6 -->
+    <div class="task-container">
+        <h3>Завдання 6. Обробка подій (наведення)</h3>
+        <p id="hoverText">Наведіть курсор сюди, щоб змінити колір.</p>
+    </div>
+
+    <!-- Завдання 7 -->
+    <div class="task-container">
+        <h3>Завдання 7. Валідація даних форми</h3>
+        <form id="emailForm">
+            <input type="email" id="email" placeholder="Електронна пошта" required>
+            <br>
+            <button type="submit">Надіслати</button>
+        </form>
+    </div>
+
+    <!-- Завдання 8 -->
+    <div class="task-container">
+        <h3>Завдання 8. Зміна атрибутів</h3>
+        <!-- Використовуємо placeholder-зображення для демонстрації -->
+        <img id="image" src="https://via.placeholder.com/150/3498db/ffffff?text=Image+1" alt="Перше зображення" style="display:block; margin-bottom:10px;">
+        <button id="changeImage">Змінити зображення</button>
+    </div>
+
+    <!-- Завдання 9 -->
+    <div class="task-container">
+        <h3>Завдання 9. Використання класів</h3>
+        <p id="styledText">Цей текст стане червоним за допомогою CSS-класу.</p>
+        <button id="addClassButton">Додати клас</button>
+    </div>
+
+    <script>
+        // ==========================================
+        // ЗАДАЧА 1
+        // ==========================================
+        function task1Log() {
+            const headerText = document.getElementById("header").innerText;
+            console.log("Завдання 1:", headerText);
+            alert("Текст заголовка виведено у консоль браузера (F12 -> Console): " + headerText);
+        }
+
+        // ==========================================
+        // ЗАДАЧА 2
+        // ==========================================
+        document.getElementById("changeTextButton").addEventListener("click", function() {
+            document.getElementById("text").innerText = "Текст успішно змінено через DOM API!";
+        });
+
+        // ==========================================
+        // ЗАДАЧА 3
+        // ==========================================
+        document.getElementById("addParagraphButton").addEventListener("click", function() {
+            const newParagraph = document.createElement("p");
+            newParagraph.innerText = "Це новий динамічно доданий абзац!";
+            document.getElementById("paragraphContainer").appendChild(newParagraph);
+        });
+
+        // ==========================================
+        // ЗАДАЧА 4
+        // ==========================================
+        document.getElementById("removeLastParagraph").addEventListener("click", function() {
+            const paragraphs = document.getElementsByClassName("removable");
+            if (paragraphs.length > 0) {
+                paragraphs[paragraphs.length - 1].remove();
+            } else {
+                alert("Більше немає абзаців для видалення у цій секції!");
+            }
+        });
+
+        // ==========================================
+        // ЗАДАЧА 5
+        // ==========================================
+        document.getElementById("changeBackgroundColor").addEventListener("click", function() {
+            // Перемикаємо колір фону між світлим та блакитним
+            if (document.body.style.backgroundColor === "lightblue") {
+                document.body.style.backgroundColor = "#f4f7f6";
+            } else {
+                document.body.style.backgroundColor = "lightblue";
+            }
+        });
+
+        // ==========================================
+        // ЗАДАЧА 6
+        // ==========================================
+        const hoverText = document.getElementById("hoverText");
+        hoverText.addEventListener("mouseover", function() {
+            this.style.color = "red";
+        });
+        hoverText.addEventListener("mouseout", function() {
+            this.style.color = "black";
+        });
+
+        // ==========================================
+        // ЗАДАЧА 7
+        // ==========================================
+        document.getElementById("emailForm").addEventListener("submit", function(event) {
+            const email = document.getElementById("email").value;
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!emailPattern.test(email)) {
+                alert("Невірний формат електронної пошти!");
+                event.preventDefault(); // Запобігання стандартному відправленню
+            } else {
+                alert("Форму успішно валідовано!");
+            }
+        });
+
+        // ==========================================
+        // ЗАДАЧА 8
+        // ==========================================
+        document.getElementById("changeImage").addEventListener("click", function() {
+            const img = document.getElementById("image");
+            // Змінюємо src на інше зображення-заглушку
+            img.src = "https://via.placeholder.com/150/e74c3c/ffffff?text=Image+2";
+            img.alt = "Друге зображення";
+        });
+
+        // ==========================================
+        // ЗАДАЧА 9
+        // ==========================================
+        document.getElementById("addClassButton").addEventListener("click", function() {
+            document.getElementById("styledText").classList.add("red");
+        });
+    </script>
+</body>
+</html>
